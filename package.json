@@ -1,0 +1,10 @@
+{
+  "name": "engain-mcp-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "build:core": "npm run build -w engain-mcp",
+    "test": "npm run test -w engain-mcp"
+  }
+}
