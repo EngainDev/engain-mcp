@@ -43,9 +43,9 @@ Generate your `ENGAIN_API_KEY` in the Engain app under **Settings → API** (MAX
 
 Seven tools spend credits: `engain_create_comment_task`, `engain_create_post_task`, `engain_create_reply_task`, `engain_create_thread_task_group`, `engain_create_upvote_order`, `engain_create_downvote_order`, `engain_product_research`.
 
-Set **`ENGAIN_MCP_READONLY=true`** and those seven are never registered — the agent sees only the 23 read-only tools. With spending enabled, each spend tool returns the credits charged and remaining balance in its result, so the agent always sees what it just spent.
+Set **`ENGAIN_MCP_READONLY=true`** and those seven are never registered — the agent sees only the 26 read-only tools. The three preflight tools are deliberately among them: a rule check publishes nothing, so a read-only agent should still be able to warn a user before proposing content. With spending enabled, each spend tool returns the credits charged and remaining balance in its result, so the agent always sees what it just spent.
 
-## Tools (30)
+## Tools (33)
 
 Every tool is prefixed `engain_`. Project-scoped tools take an optional `projectId` that falls back to `ENGAIN_PROJECT_ID`; call `engain_get_me` to discover project IDs.
 
@@ -77,6 +77,13 @@ Every tool is prefixed `engain_`. Project-scoped tools take an optional `project
 
 **Product Research** (spend 💳)
 - `engain_product_research` — agentic Reddit research for a goal, returns pains/hooks/angles with source URLs
+
+**Preflight** (publishes nothing)
+- `engain_rule_check` — check ONE draft post/comment/reply against a subreddit: violated rules, removal risk, marketing-intent risk, authenticity risk with concrete edit suggestions, estimated publish time, and the subreddit's historical removal rate for comparable submissions (5 req/min)
+- `engain_rule_check_batch` — the same for up to 25 drafts against one subreddit, keyed back to your own ids, sharing one fetch of the thread context. Batch rather than loop
+- `engain_get_subreddit_stats` — a subreddit's historical removal rates, no draft and **no project** required (general 30 req/min budget)
+
+Removal **risk** is a judgement about one draft; removal **rate** is a measurement of a subreddit. They sit side by side in a rule-check response and mean different things.
 
 ## How it works
 
