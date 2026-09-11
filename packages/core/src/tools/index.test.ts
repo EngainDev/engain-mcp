@@ -12,15 +12,15 @@ const SPEND = [
 ];
 
 describe("buildToolRegistry", () => {
-  it("includes all tools (30) when not readonly", () => {
+  it("includes all tools (33) when not readonly", () => {
     const tools = buildToolRegistry(false);
-    expect(tools).toHaveLength(30);
-    expect(new Set(tools.map((t) => t.name)).size).toBe(30); // unique names
+    expect(tools).toHaveLength(33);
+    expect(new Set(tools.map((t) => t.name)).size).toBe(33); // unique names
   });
 
   it("omits the 7 spend tools in readonly mode", () => {
     const tools = buildToolRegistry(true);
-    expect(tools).toHaveLength(23);
+    expect(tools).toHaveLength(26);
     for (const name of SPEND) {
       expect(tools.find((t) => t.name === name)).toBeUndefined();
     }
@@ -31,6 +31,14 @@ describe("buildToolRegistry", () => {
     for (const name of SPEND) {
       expect(all.find((t) => t.name === name)?.spendsCredits).toBe(true);
     }
+  });
+
+  it("keeps the preflight tools available in readonly mode", () => {
+    // Preflight publishes nothing, so a read-only connector must not be forced to advise blind.
+    const readonlyNames = buildToolRegistry(true).map((t) => t.name);
+    expect(readonlyNames).toContain("engain_rule_check");
+    expect(readonlyNames).toContain("engain_rule_check_batch");
+    expect(readonlyNames).toContain("engain_get_subreddit_stats");
   });
 
   it("all tool names are prefixed engain_", () => {
