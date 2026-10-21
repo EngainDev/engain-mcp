@@ -6,6 +6,7 @@ import { discoveryTools } from "./discovery.js";
 import { labelTools } from "./labels.js";
 import { productResearchTools } from "./product-research.js";
 import { ruleCheckTools } from "./rule-check.js";
+import { smartSearchTools } from "./smart-search.js";
 
 export function buildToolRegistry(readonly: boolean): EngainTool[] {
   const all: EngainTool[] = [
@@ -16,6 +17,7 @@ export function buildToolRegistry(readonly: boolean): EngainTool[] {
     ...labelTools,
     ...productResearchTools,
     ...ruleCheckTools,
+    ...smartSearchTools,
   ];
   return readonly ? all.filter((t) => !t.spendsCredits) : all;
 }

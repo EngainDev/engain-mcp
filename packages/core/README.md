@@ -37,15 +37,17 @@ Generate your `ENGAIN_API_KEY` in the Engain app under **Settings → API** (MAX
 | `ENGAIN_API_KEY` | ✅ | — | Your Engain API key (`eng_…`). Sent as the `X-API-Key` header. |
 | `ENGAIN_BASE_URL` | | `https://api.engain.io` | API host. Point at a non-prod deployment for testing. |
 | `ENGAIN_PROJECT_ID` | | — | Default project ID for project-scoped tools when one isn't passed. |
-| `ENGAIN_MCP_READONLY` | | `false` | When truthy (`1`/`true`/`yes`), all credit-spending tools are hidden. |
+| `ENGAIN_MCP_READONLY` | | `false` | When truthy (`1`/`true`/`yes`), all credit-spending tools are hidden, as is `engain_smart_search` (spends Smart Search Quota). |
 
 ## Spend safety
 
 Seven tools spend credits: `engain_create_comment_task`, `engain_create_post_task`, `engain_create_reply_task`, `engain_create_thread_task_group`, `engain_create_upvote_order`, `engain_create_downvote_order`, `engain_product_research`.
 
-Set **`ENGAIN_MCP_READONLY=true`** and those seven are never registered — the agent sees only the 26 read-only tools. The three preflight tools are deliberately among them: a rule check publishes nothing, so a read-only agent should still be able to warn a user before proposing content. With spending enabled, each spend tool returns the credits charged and remaining balance in its result, so the agent always sees what it just spent.
+One more tool spends **Smart Search Quota, not credits**: `engain_smart_search` spends one keyword of the plan's monthly Smart Search Quota on every call, repeat searches answered from cache included, so it is hidden in read-only mode too. Re-reading a keyword the project already searched (`engain_get_smart_search_results`) and the search history are free.
 
-## Tools (33)
+Set **`ENGAIN_MCP_READONLY=true`** and those eight are never registered — the agent sees only the 28 read-only tools. The three preflight tools are deliberately among them: a rule check publishes nothing, so a read-only agent should still be able to warn a user before proposing content. With spending enabled, each spend tool returns the credits charged and remaining balance in its result, so the agent always sees what it just spent.
+
+## Tools (36)
 
 Every tool is prefixed `engain_`. Project-scoped tools take an optional `projectId` that falls back to `ENGAIN_PROJECT_ID`; call `engain_get_me` to discover project IDs.
 
@@ -70,6 +72,11 @@ Every tool is prefixed `engain_`. Project-scoped tools take an optional `project
 **Discovery**
 - `engain_list_opportunities`, `engain_get_opportunity`
 - `engain_list_mentions`, `engain_get_mention`, `engain_get_mention_stats`, `engain_get_mention_brands`
+
+**Smart Search**
+- `engain_smart_search` — find Reddit threads for a keyword: Google Ranked threads and Reddit's own search (spends Smart Search Quota; 5 req/min)
+- `engain_get_smart_search_results` — free re-read of a keyword the project already searched
+- `engain_list_smart_search_history` — your recent searches in a project
 
 **Labels**
 - `engain_list_labels`, `engain_create_label`, `engain_delete_label`
